@@ -489,6 +489,6 @@ document.getElementById("heaviest").innerHTML = `<thead><tr><th class="num">#</t
 document.getElementById("oldest").innerHTML = `<thead><tr><th class="num">Year</th><th>Tower</th><th class="wide">Founder</th><th class="num">Bell</th></tr></thead><tbody>` +
   R.oldest_dated.map(r => `<tr><td class="num">${r.year}</td><td>${esc(r.place)}<small>${esc(r.dedication)}, ${esc(r.county || r.country)}</small></td><td class="wide">${esc(r.founder)}</td><td class="num">${esc(r.role)} of ${r.ring_bells}</td></tr>`).join("") + "</tbody>";
 </script>
-<script src="https://tristan-hotham.github.io/assets/site-nav.js" defer></script>
+<script src="/assets/site-nav.js" defer></script>
 </body>
 </html>
