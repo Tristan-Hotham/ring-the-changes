@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Ring the Changes</title>
+<meta name="description" content="Every ring of church bells hung for full-circle change ringing, from Dove's Guide: where they hang, how many bells, the heaviest tenors, the oldest bells, the great founders, and the years England cast the most bells.">
+<meta property="og:title" content="Ring the changes: where England's bells hang">
+<meta property="og:description" content="{{counts.rings|int}} rings and {{counts.bells|int}} bells hung for change ringing; {{counts.england_share|pct}} of the rings are in England. The oldest dated bell still rung was cast in {{oldest_dated_first.year|raw}}.">
+<meta property="og:image" content="https://tristan-hotham.github.io/ring-the-changes/header.png">
+<meta property="og:url" content="https://tristan-hotham.github.io/ring-the-changes/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,800;9..144,900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+/* Warm stone and bell bronze. Darker bronze = more bells. Verdigris marks the old metal. */
+:root{
+  --bg:#F3EEE4; --panel:#E9E2D4; --fg:#231C14; --muted:#6B6052; --rule:#DCD2C1; --card:#FBF8F2; --border:#CBBDA6;
+  --hot:#9A5B1E; --plum:#6E3F6B; --verd:#2F7566; --gold:#B5862B; --ink:#3B4A6B; --rn:#A79E8F;
+  --f1:#3E62A8; --f2:#A85A1C; --f3:#1F9077; --f4:#C79A1E; --f5:#9150A0; --f6:#D7735A; --fo:#DCD1BE;
+  --s0:#E6D3AE; --s1:#D3A562; --s2:#B5772F; --s3:#86471A; --s4:#4E240C;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#17140F; --panel:#211D17; --fg:#EDE6DA; --muted:#A79C8B; --rule:#373128; --card:#231F19; --border:#4C4438;
+  --hot:#E0A15A; --plum:#C99BC6; --verd:#6FC2AC; --gold:#E2BC5E; --ink:#93A9D6; --rn:#5F584D;
+  --f1:#6F93D8; --f2:#D38E45; --f3:#3FAE92; --f4:#D9B23F; --f5:#B57AC6; --f6:#E8806A; --fo:#4A4338; --s0:#5C4A30; --s1:#8C6634; --s2:#C08640; --s3:#E3A85E; --s4:#FFD79A; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#17140F; --panel:#211D17; --fg:#EDE6DA; --muted:#A79C8B; --rule:#373128; --card:#231F19; --border:#4C4438;
+  --hot:#E0A15A; --plum:#C99BC6; --verd:#6FC2AC; --gold:#E2BC5E; --ink:#93A9D6; --rn:#5F584D;
+  --f1:#6F93D8; --f2:#D38E45; --f3:#3FAE92; --f4:#D9B23F; --f5:#B57AC6; --f6:#E8806A; --fo:#4A4338; --s0:#5C4A30; --s1:#8C6634; --s2:#C08640; --s3:#E3A85E; --s4:#FFD79A; color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 18px/1.62 var(--body);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+.wrap{max-width:680px;margin:0 auto;padding-block:28px 64px}
+.wrap .bleed{width:min(1080px,calc(100vw - 32px));margin-left:calc((100% - min(1080px,100vw - 32px))/2);margin-right:0}
+a{color:inherit;text-decoration-color:var(--hot);text-underline-offset:3px}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kicker b{background:var(--hot);color:#fff;padding:5px 8px;font-weight:500}
+header.hero{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 24px;align-items:end;border-bottom:6px double var(--fg);padding-bottom:22px;margin-top:18px}
+h1{font:900 clamp(50px,13vw,108px)/.88 var(--display);letter-spacing:-.02em;margin:0;text-wrap:balance;font-variation-settings:"SOFT" 50}
+h1 em{font-style:normal;color:var(--hot)}
+h1 small{display:block;font:800 clamp(22px,5vw,34px)/1.1 var(--display);letter-spacing:-.01em;margin-top:10px;color:var(--fg)}
+.mark{width:clamp(84px,19vw,160px);height:auto;display:block}
+.dek{grid-column:1/-1;font-size:21px;line-height:1.42;margin:8px 0 0;max-width:46ch}
+.byline{font:400 13px/1.4 var(--mono);color:var(--muted);margin-top:14px}
+h2{font:800 34px/1.04 var(--display);letter-spacing:-.01em;margin:52px 0 10px;text-wrap:balance}
+h2 .n{font:500 13px/1 var(--mono);color:var(--hot);display:block;letter-spacing:.1em;margin-bottom:10px}
+h3{font:600 20px/1.25 var(--display);margin:28px 0 6px}
+p{margin:0 0 16px}
+.lede::first-letter{font:900 72px/.8 var(--display);float:left;margin:6px 10px 0 0;color:var(--hot)}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule);margin:26px 0 8px}
+.stats div{background:var(--card);padding:14px 12px}
+.stats b{display:block;font:900 clamp(26px,5.6vw,38px)/1 var(--display);color:var(--fg)}
+.stats b.h{color:var(--hot)}
+.stats span{font:400 12px/1.35 var(--mono);color:var(--muted);display:block;margin-top:6px}
+@media (max-width:600px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.figure{margin:26px 0 30px}
+.fig-h{font:600 19px/1.25 var(--display);margin:0 0 4px}
+.fig-sub{font:400 13px/1.45 var(--mono);color:var(--muted);margin:0 0 12px}
+.src{font:400 12px/1.45 var(--mono);color:var(--muted);margin-top:10px}
+.chart{width:100%;position:relative}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:var(--mono);fill:var(--fg)}
+.lab{font-size:12px}.lab.m{fill:var(--muted)}.lab.b{font-weight:500}.lab.s{font-size:11px}
+.tip{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font:400 12px/1.45 var(--mono);padding:8px 10px;border-radius:3px;max-width:270px;z-index:1000;transform:translate(-50%,calc(-100% - 12px));display:none}
+.tip b{font-weight:500}
+.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:0 0 10px}
+.btn{font:500 12px/1 var(--mono);background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:8px 10px;cursor:pointer;min-height:36px}
+.btn[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:2px solid var(--hot);outline-offset:2px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:3px;overflow:hidden;max-width:100%;flex-wrap:wrap}
+.seg .btn{border:0;border-radius:0;border-right:1px solid var(--border)}
+.seg .btn:last-child{border-right:0}
+.searchbox{position:relative;flex:1 1 220px;min-width:0}
+input[type=search]{font:400 14px/1 var(--mono);background:var(--card);color:var(--fg);border:1px solid var(--border);border-radius:3px;padding:9px 10px;min-height:36px;width:100%}
+.suggest{position:absolute;left:0;right:0;top:100%;margin:2px 0 0;padding:0;list-style:none;background:var(--card);border:1px solid var(--border);z-index:1001;font:400 13px/1.3 var(--mono);display:none;max-height:340px;overflow:auto}
+.suggest li{padding:8px 10px;cursor:pointer;border-bottom:1px solid var(--rule)}
+.suggest li span{color:var(--muted)}
+.suggest li.h{cursor:default;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--panel)}
+.suggest li[aria-selected="true"],.suggest li:not(.h):hover{background:var(--panel)}
+#lmap{height:660px;border:1px solid var(--border);background:var(--panel);border-radius:2px}
+@media (max-width:600px){#lmap{height:500px}}
+.leaflet-container{font:400 12px/1.4 var(--mono);background:var(--panel)}
+.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:var(--card);color:var(--fg);border-radius:3px;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.leaflet-popup-content{margin:12px 14px;font:400 12.5px/1.45 var(--mono);min-width:220px}
+.leaflet-container a.leaflet-popup-close-button{color:var(--muted)}
+.leaflet-popup-content a{color:var(--fg)}
+.leaflet-bar a,.leaflet-bar a:hover{background:var(--card);color:var(--fg);border-bottom-color:var(--border)}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--card) 85%,transparent)!important;color:var(--muted)}
+.leaflet-control-attribution a{color:var(--fg)}
+.pop b.t{font:600 17px/1.2 var(--display);display:block;margin-bottom:2px}
+.pop .c{color:var(--muted);margin-bottom:6px}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;margin:4px 0 6px}
+.pop dt{color:var(--muted)}.pop dd{margin:0}
+.pop .big{font:900 26px/1.05 var(--display);color:var(--hot)}
+.pop .big small{font:400 12px/1.3 var(--mono);color:var(--muted);display:block}
+.pop .pn{font-size:11.5px;color:var(--muted);margin:4px 0}
+.pop ol{margin:4px 0 0;padding-left:18px}
+.pop li{margin:2px 0}
+.pop button{font:500 11.5px/1 var(--mono);background:none;border:1px solid var(--border);color:var(--fg);padding:6px 8px;border-radius:3px;cursor:pointer;margin-top:6px}
+.legend{display:flex;gap:6px 14px;flex-wrap:wrap;font:400 12px/1.3 var(--mono);color:var(--muted);margin-top:8px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px;border:1px solid var(--bg)}
+.legend i.ring{background:transparent!important;border:2px solid var(--rn)}
+.pull{font:600 26px/1.25 var(--display);border-left:6px solid var(--hot);padding:4px 0 4px 18px;margin:30px 0}
+.note{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;font-size:16px;margin:22px 0}
+.note h3{margin-top:0}
+table.t{width:100%;border-collapse:collapse;font:400 13px/1.35 var(--mono)}
+table.t th{text-align:left;font-weight:500;color:var(--muted);border-bottom:2px solid var(--fg);padding:6px 8px 6px 0}
+table.t td{border-bottom:1px solid var(--rule);padding:7px 8px 7px 0;vertical-align:top}
+table.t td.num,table.t th.num{text-align:right;white-space:nowrap}
+table.t td small{color:var(--muted);display:block}
+.tablewrap{overflow-x:auto}
+@media (max-width:600px){table.t .wide{display:none}}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:20px 0}
+@media (max-width:600px){.cards{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--border);border-left:4px solid var(--hot);padding:12px 14px;font:400 13px/1.5 var(--mono)}
+.card.g{border-left-color:var(--verd)}
+.card b{font:600 18px/1.2 var(--display);display:block;margin-bottom:2px}
+.card .big{font:900 30px/1.05 var(--display);margin:6px 0 2px}
+.card .big span{color:var(--muted);font:400 13px/1 var(--mono)}
+details{margin:14px 0}
+summary{font:500 13px/1.4 var(--mono);cursor:pointer;color:var(--fg);padding:8px 0}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+.cta a{font:500 13px/1 var(--mono);text-decoration:none;border:1px solid var(--fg);padding:11px 14px;border-radius:3px}
+.cta a.p{background:var(--hot);border-color:var(--hot);color:#fff}
+footer{border-top:6px double var(--fg);margin-top:56px;padding-top:16px;font:400 13px/1.55 var(--mono);color:var(--muted)}
+footer p{margin:0 0 10px}
+.theme{position:fixed;right:12px;bottom:12px;z-index:1002}
+@media print{.theme,.controls{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="kicker"><b>Data study</b><span>Church bells</span><span>England and the world, 1317 to 2026</span></div>
+<header class="hero">
+  <h1>Ring the <em>changes</em><small>where England's bells hang</small></h1>
+  <svg class="mark" viewBox="-100 -100 200 200" aria-hidden="true"><g id="heroMark"></g></svg>
+  <p class="dek">Dove's Guide lists {{counts.rings|int}} rings of bells hung for full-circle change ringing, holding {{counts.bells|int}} bells. I mapped every one: where they hang, how heavy they are, how old, who cast them, and the years when England cast the most.</p>
+</header>
+<div class="byline">Dr Tristan Hotham, Independent researcher · October 2026 · Data: Dove's Guide for Church Bell Ringers (CCCBR, CC BY-SA 4.0)</div>
+
+<div class="stats">
+  <div><b>{{counts.rings|int}}</b><span>rings of three or more bells hung for full-circle ringing</span></div>
+  <div><b class="h">{{counts.england_share|pct}}</b><span>of them in England; {{counts.wales|int}} in Wales and {{counts.scotland|int}} in Scotland</span></div>
+  <div><b>{{oldest_dated_first.year|raw}}</b><span>the oldest dated bell still hung in a ring, at {{oldest_dated_first.place}}</span></div>
+  <div><b class="h">{{wars.y1943|int}}</b><span>bells still in rings that were cast in 1943, the same in 1944</span></div>
+</div>
+
+<p class="lede">Some time in the early seventeenth century, English ringers found that a bell swung right round, mouth up, and held balanced there for a moment, could be controlled to the split second. A band of ringers could then make the bells strike in a different order at every pull: ringing the changes. By 1668, when Richard Duckworth and Fabian Stedman published <i>Tintinnalogia</i>, it had rules. It is still an almost wholly English art.</p>
+<p>Since 1950 ringers have found their towers with Dove's Guide, first compiled by Ronald Dove, who rang at nearly every tower himself. Today the Central Council of Church Bell Ringers publishes it online, with a record for every ring and for {{counts.bell_records|int}} of the bells in them: weight, note, founder and the year each was cast. It is open data, and it is a wonderful record of English parish life. Here is what it shows.</p>
+
+<h2><span class="n">01 · The map</span>Find your tower</h2>
+<p>Each dot is a ring of bells. Search for a tower, or for any city, town or village to see the nearest rings. Colour the dots by the number of bells, by the age of the oldest bell, or by the weight of the tenor (the biggest bell). Hollow dots are rings Dove marks as unringable. Tap a dot for the tower's details, its practice night if it lists one, and a link to its full Dove record.</p>
+<div class="figure bleed">
+  <div class="controls">
+    <div class="seg" role="group" aria-label="Colour the dots by">
+      <button class="btn" data-mode="size" aria-pressed="true">Number of bells</button>
+      <button class="btn" data-mode="age" aria-pressed="false">Oldest bell</button>
+      <button class="btn" data-mode="tenor" aria-pressed="false">Tenor weight</button>
+    </div>
+    <div class="searchbox">
+      <input type="search" id="q" placeholder="Tower or place, e.g. Clitheroe" aria-label="Find a tower or a place" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="sug">
+      <ul class="suggest" id="sug" role="listbox"></ul>
+    </div>
+    <button class="btn" id="nearme">Near me</button>
+  </div>
+  <div id="lmap" role="region" aria-label="Map of {{site.points|int}} rings of bells, coloured by number of bells"></div>
+  <div class="legend" id="legend"></div>
+  <div class="src">{{site.points|int}} rings with coordinates in Dove's Guide ({{counts.no_coords|int}} more have none, mostly small mobile or private rings). Place search: OS Open Names cities, towns, villages and suburbs. Click the map to let the scroll wheel zoom it.</div>
+</div>
+
+<h2><span class="n">02 · Where</span>An English art, and a southern one</h2>
+<p>Of the {{counts.rings|int}} rings, {{counts.england|int}} are in England, {{counts.wales|int}} in Wales, {{counts.ireland|int}} on the island of Ireland and just {{counts.scotland|int}} in Scotland. Within England they thicken towards the south and the Midlands. Devon has the most ({{county_most.0.rings|int}}), then Somerset ({{county_most.1.rings|int}}) and Lincolnshire ({{county_most.2.rings|int}}). Measured by area, the densest large counties are {{county_density_top.0.county}}, {{county_density_top.1.county}} and {{county_density_top.2.county}}, at over nine rings per 100 square kilometres; Northumberland has {{county_density_bottom.3.per100|f2}}.</p>
+<p>A fairer test is to ask what share of churches have a ring. OpenStreetMap maps {{geo.anglican_osm|int}} Anglican churches in England and Wales, and {{geo.anglican_with_ring|int}} of them ({{geo.anglican_share|pct}}) have a Dove ring within 150 metres. In Northamptonshire it is {{county_share_top.0.share|pct}}, in Devon {{county_share_top.1.share|pct}}. In the far north of England and in north and west Wales it falls to between {{county_share_bottom.5.share|pct}} and {{county_share_bottom.0.share|pct}}: there most parish churches have no ring at all.</p>
+<div class="figure">
+  <div class="controls"><div class="seg" role="group" aria-label="Measure"><button class="btn" data-c="share" aria-pressed="true">Share of churches with a ring</button><button class="btn" data-c="dens" aria-pressed="false">Rings per 100 km²</button></div></div>
+  <div class="fig-h" id="cH"></div>
+  <div class="fig-sub" id="cS"></div>
+  <div class="chart" id="counties"></div>
+  <div class="src">Counties: ceremonial counties of England and preserved counties of Wales (ONS boundaries). Churches: OpenStreetMap places of worship tagged Christian and Anglican (Church of England, Church in Wales); churches with no denomination tag are left out, so the shares are approximate.</div>
+</div>
+<p>The rings are close together. Half of all towers in England and Wales are within {{geo.nn_median_km|f1}} km of another ring, and {{geo.nn_within3|pct}} within 3 km. The loneliest is at Hugh Town on the Isles of Scilly, {{geo.nn_max_km|f1}} km from the nearest ring on the mainland.</p>
+
+<h2><span class="n">03 · How many bells</span>Sixes, eights and the rise of the twelves</h2>
+<p>The typical English ring has six bells: {{size_groups.six|int}} rings ({{size_groups.six_share|pct}}) do. There are {{size_groups.eight|int}} rings of eight, {{size_groups.ten|int}} of ten and {{size_groups.twelve|int}} of twelve. {{size_groups.over12|Words}} towers go beyond twelve: Winchester Cathedral has 14, Ossett 15, and St Martin's in Birmingham, Christ Church Cathedral in Dublin and the Bell Tower in Perth, Western Australia, have 16. Most of the extras are semitone bells, which let a band ring a lighter ten or twelve.</p>
+<p>At the small end there are {{size_groups.small|int}} rings of three to five bells, and they are where the silence is. Dove marks {{unringable.n|int}} rings ({{unringable.share|pct}}) as unringable, and {{unringable.small_share_of_ur|pct}} of those are rings of three, four or five: {{unringable.three_share|pct}} of all rings of three cannot be rung, against {{unringable.six_share|pct1}} of sixes and {{unringable.eight_share|pct1}} of eights.</p>
+<div class="figure">
+  <div class="fig-h">Rings by number of bells</div>
+  <div class="fig-sub">Solid: ringable. Pale: marked unringable in Dove's Guide.</div>
+  <div class="chart" id="sizes"></div>
+</div>
+<p>Big rings are mostly new. Dove does not say when a ring reached its present size, but it does give the year each bell was cast, and a ring cannot be older than its newest bell. For the rings of twelve, the median newest bell was cast in {{growth_by.12.median_newest|raw}}, and {{growth_by.12.share_since1950|pct}} have at least one bell cast since 1950. For rings of ten the median is {{growth_by.10.median_newest|raw}}; for eights {{growth_by.8.median_newest|raw}}. The twelve-bell ring, the summit of English ringing, is largely a creation of the last seventy years.</p>
+<div class="figure">
+  <div class="fig-h">The rings of today, by the year their newest bell was cast</div>
+  <div class="fig-sub">Cumulative count of present rings of 8, 10 and 12 bells whose newest bell had been cast by each year. A bell recast later moves its ring to the right, so this is the latest date a ring could have taken its present form.</div>
+  <div class="chart" id="growth"></div>
+</div>
+
+<h2><span class="n">04 · Heavy metal</span>The tenors</h2>
+<p>Ringers weigh bells in hundredweights, quarters and pounds: a hundredweight is 112 lb, about 51 kg. The median tenor, the heaviest bell of a ring, is about {{tenor.median_cwt|raw}} cwt ({{tenor.median_kg|int}} kg). {{tenor.over_ton|int}} rings have a tenor of a ton or more, and {{tenor.over_2ton|int}} have one of two tons or more. The heaviest of all is at Liverpool Cathedral: {{heaviest.0.tenor_cwt}}, about {{heaviest.0.tenor_kg|int}} kg, swung full circle by one ringer on one rope.</p>
+<div class="figure">
+  <div class="fig-h">The heaviest rings</div>
+  <div class="fig-sub">Full-circle rings with the heaviest tenors. Weight as cwt-qr-lb, with kilograms.</div>
+  <div class="tablewrap"><table class="t" id="heaviest"></table></div>
+</div>
+
+<h2><span class="n">05 · Old metal</span>Bells older than the Reformation</h2>
+<p>The median bell in a ring was cast in {{ages.median_year|raw}}. But {{ages.before1500|int}} bells still hanging in rings were cast before 1500, most dated by their style rather than an inscription, in {{ages.medieval_rings|int}} different rings. Suffolk has the most ({{ages.medieval_top_counties.0.n|int}}), then Norfolk ({{ages.medieval_top_counties.1.n|int}}), Devon ({{ages.medieval_top_counties.2.n|int}}) and Somerset ({{ages.medieval_top_counties.3.n|int}}). These bells were cast for swing chiming long before anyone rang changes on them.</p>
+<p>The oldest bell with a cast date in Dove's Guide that still hangs in a ring is the fourth of six at {{oldest_dated_first.place}}, {{oldest_dated_first.county}}, dated {{oldest_dated_first.year|raw}} and attributed to {{oldest_dated_first.founder}}.</p>
+<div class="figure">
+  <div class="fig-h">The oldest dated bells still rung</div>
+  <div class="fig-sub">Bells in rings with a single cast year in Dove (not "circa" or a range), oldest first, one per ring and year.</div>
+  <div class="tablewrap"><table class="t" id="oldest"></table></div>
+</div>
+
+<h2><span class="n">06 · The founders</span>From Gloucester to Whitechapel to Loughborough</h2>
+<p>Dove names {{founders.n_founders|int}} founders for the bells in rings. Before 1700 they were many and mostly local, each serving a county or two. In the eighteenth century the Rudhalls of Gloucester cast bells by the thousand ({{founders.rudhall|int}} still hang in rings). In the nineteenth, London's Whitechapel foundry and the Taylors of Loughborough took over, joined by Warner of London and Gillett &amp; Johnston of Croydon.</p>
+<p>Between them, Whitechapel (with its earlier owners) and Taylor cast {{founders.big2_share|pct}} of all the bells in rings today, and {{founders.c20_big2_share|pct}} of those cast in the twentieth century. Whitechapel's last bells in the data are dated {{founders.whitechapel_last|raw}}; the foundry closed that year after more than four centuries. Since 2018 Taylor has cast {{founders.since2018_taylor_share|pct}} of new bells in rings.</p>
+<div class="figure bleed">
+  <div class="fig-h">Who cast the bells still hanging today</div>
+  <div class="fig-sub">Bells in rings by the 25 years in which they were cast and their foundry family, as grouped in Dove's founders table. Bells with only an approximate date are placed at that date.</div>
+  <div class="chart" id="founders"></div>
+</div>
+
+<h2><span class="n">07 · Jubilees and wars</span>The years England cast bells</h2>
+<p>Plot the bells by the year on them and the history of the country rings out. The two biggest single years are {{cast_years.top.0.year|raw}}, with {{cast_years.top.0.n|int}} bells, and {{cast_years.top.1.year|raw}}, with {{cast_years.top.1.n|int}}: Queen Victoria's Diamond and Golden Jubilees, each about twice the years around them. The coronation of George VI in 1937 shows the same jump ({{event.1937.n|int}} bells against an average of {{event.1937.base|int}} in the years around it), and so do 1902 and 1911.</p>
+<p class="pull">In 1943 and 1944, not one bell that hangs in a ring today was cast.</p>
+<p>The wars are just as clear. From 1915 to 1918 the average fell to {{wars.ww1|int}} a year, against {{wars.pre1|int}} a year in 1910 to 1914. In the Second World War church bells were silenced, to be rung only to warn of invasion: {{wars.ww2_total|int}} bells from 1940 to 1945, {{wars.y1941|int}} in 1941, {{wars.y1942|int}} in 1942 and none at all in 1943 or 1944. In 1946 there were {{wars.y1946|int}}. The busiest decade of all was the {{decades.peak_decade|raw}}s, the decade of the war memorials, with {{decades.peak_n|int}} bells.</p>
+<div class="figure bleed">
+  <div class="fig-h">Bells in rings, by the year they were cast</div>
+  <div class="fig-sub">Bells with a single cast year in Dove's Guide, 1800 to 2025. Labelled: jubilees, coronations and the Millennium.</div>
+  <div class="chart" id="years"></div>
+  <div class="src">These are the bells that survive in rings today, not all bells cast: older bells have had more time to be recast, which is part of why recent decades look busy. Later jubilees barely show: 2002 had {{event.2002.n|int}}, below the years around it.</div>
+</div>
+
+<h2><span class="n">08 · Oak, iron, steel</span>What the bells hang in</h2>
+<p>A ring of bells swinging in time puts large forces on a tower, and the frame that holds them matters as much as the bells. Before 1850, {{frames.timber_share_pre1850|pct}} of the frames still in use were timber, mostly oak. From the 1870s cast iron took over ({{frames.iron_share_1875_1950|pct}} of frames from 1875 to 1949), and since 1975 most new frames are steel ({{frames.steel_share_since1975|pct}}).</p>
+<div class="figure">
+  <div class="fig-h">Bell frames by date and material</div>
+  <div class="fig-sub">Frames in towers with a ring, by the 25 years in which they were made.</div>
+  <div class="chart" id="frames"></div>
+</div>
+
+<h2><span class="n">09 · Practice night</span>Tuesday, mostly</h2>
+<p>{{practice.listed|int}} rings list a weekly practice night in Dove, {{practice.listed_share_ringable|pct}} of the ringable ones. {{practice.midweek_share|pct}} are on a Monday to Thursday, with Tuesday just ahead. Hardly anyone practises at the weekend, when the bells are rung for services and weddings. {{extras.ground_floor|int}} rings ({{extras.ground_floor_share|pct}}) are rung from the ground floor, with no ladder to climb, and {{extras.simulator|int}} have a simulator that lets a band practise silently.</p>
+<div class="figure">
+  <div class="fig-h">Practice nights</div>
+  <div class="fig-sub">Rings by the first practice day listed in Dove's Guide.</div>
+  <div class="chart" id="days"></div>
+</div>
+<p>Most of these rings hang in listed buildings. {{extras.grade1_share_eng|pct}} of the rings in England are in a Grade I listed building, and {{extras.listed_share_eng|pct}} are in a listed building of some grade. The commonest dedication is to St Mary ({{dedications.mary|int}} English rings, {{dedications.mary_share|pct}}), then All Saints ({{dedications.all_saints|int}}) and St Peter alone ({{dedications.peter|int}}). Mary leads among all the churches of the United Kingdom too, with {{saints.mary_share|pct}} in my <a href="https://tristan-hotham.github.io/saints-and-wells/">saints and wells</a> study, where All Saints came fourth.</p>
+
+<h2><span class="n">10 · Beyond England</span>The world's rings</h2>
+<p>{{abroad.n|int}} rings are outside the British Isles, in {{abroad.countries|int}} countries. Australia has {{abroad.australia|int}}, the United States {{abroad.usa|int}} across {{abroad.usa_states|int}} states, New Zealand {{abroad.nz|int}}, Canada {{abroad.canada|int}} and South Africa {{abroad.sa|int}}. They are mostly big and young: {{abroad.eights_plus_share|pct}} have eight bells or more, and the median newest bell was cast in {{abroad.median_newest|raw}}. The oldest bell in an American ring was cast in {{abroad.oldest_usa.year|raw}} for Christ Church (Old North), Boston; Australia's oldest, at the Bell Tower in Perth, is dated {{abroad.oldest_australia.year|raw}}.</p>
+<div class="figure">
+  <div class="fig-h">Rings outside England</div>
+  <div class="fig-sub">Number of rings in Dove's Guide by country or territory, England left out ({{counts.england|int}}).</div>
+  <div class="chart" id="countries"></div>
+</div>
+
+<div class="note" id="method">
+  <h3>How I did this</h3>
+  <p><b>Data.</b> Dove's Guide for Church Bell Ringers, downloaded from the Central Council of Church Bell Ringers on {{counts.retrieved_text}}: the rings file ({{counts.rings|int}} rings of three or more bells hung for full-circle ringing, {{counts.lightweight|int}} of them lightweight or mini rings), the bells file ({{counts.bell_records|int}} records for bells in those rings, leaving out sanctus and service bells), and the founders and frames files. A tower with two rings counts twice.</p>
+  <p><b>Cast years.</b> Dove gives a cast date for {{ages.with_year|int}} bells. A single year (sometimes in brackets) counts as dated; "c" dates count as approximate at the year given; a range counts at its midpoint. The year charts use dated bells only; ages and the founders chart use all. Many medieval bells carry Dove's style dates such as c1499, so "before 1500" means "dated or judged to be medieval".</p>
+  <p><b>Founders.</b> Foundry families follow the Group column in Dove's founders table: Whitechapel includes the Mears, Lester, Pack, Chapman and Stainbank names; Taylor includes the Taylors of St Neots, Oxford and Loughborough.</p>
+  <p><b>Places.</b> Counties by point in polygon with ONS boundaries (ceremonial counties in England, preserved counties in Wales). Churches from OpenStreetMap; a church has a ring if a Dove ring lies within 150 m. Distances between towers on the British National Grid.</p>
+  <p><b>Limits.</b> Dove records rings that exist now. Bells recast, sold or melted down are gone from it, so the record of past centuries is a record of survival. Dates of the newest bell are an upper bound on when a ring took its present form, not the date of augmentation. Practice nights are as towers report them and change often; check with the tower before you go.</p>
+</div>
+<div class="cta">
+  <a class="p" href="https://github.com/Tristan-Hotham/ring-the-changes">Data and code</a>
+  <a href="https://doi.org/10.5281/zenodo.23729641">Paper (Zenodo)</a>
+  <a href="https://dove.cccbr.org.uk/">Dove's Guide</a>
+  <a href="https://tristan-hotham.github.io/saints-and-wells/">Saints and wells</a>
+  <a href="https://blog.tristanhotham.com/">Blog</a>
+</div>
+<footer>
+  <p>Dr Tristan Hotham, Independent researcher. ORCID 0000-0003-4931-9349. Cite as: Hotham, T. (2026) Ring the changes: where England's bells hang. https://doi.org/10.5281/zenodo.23729641</p>
+  <p>I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.</p>
+  <p>Bell data: Dove's Guide for Church Bell Ringers, Central Council of Church Bell Ringers, dove.cccbr.org.uk, CC BY-SA 4.0 (<a href="https://creativecommons.org/licenses/by-sa/4.0/">licence</a>). Changes were made: the data were cleaned, cast dates parsed and summarised, and counties added. This study is not endorsed by the Central Council. Churches: © OpenStreetMap contributors (ODbL), counts only. County boundaries: Office for National Statistics, contains OS data © Crown copyright and database right 2026 (Open Government Licence v3.0). Place search: OS Open Names, contains OS data © Crown copyright and database right 2026 (Open Government Licence v3.0). History: Wikipedia articles "Change ringing", "Church bell", "Whitechapel Bell Foundry", "John Taylor &amp; Co" and "Dove's Guide for Church Bell Ringers" (CC BY-SA 4.0). Base map tiles © Esri.</p>
+  <p>The derived data and the text of this page are released under CC BY-SA 4.0, as Dove's licence requires. The code is released under the MIT licence. Other studies: <a href="https://tristan-hotham.github.io/saints-and-wells/">Saints and wells</a>, <a href="https://tristan-hotham.github.io/war-memorials/">War memorials</a>, <a href="https://blog.tristanhotham.com/">all posts</a>.</p>
+</footer>
+</div>
+<div class="tip" id="tip"></div>
+<button class="btn theme" id="theme" aria-label="Toggle dark mode">◐</button>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script>
+const D = /*SITE*/;
+const R = /*RESULTS*/;
+const NS = "http://www.w3.org/2000/svg";
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const el = (t, a = {}, p) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (p) p.appendChild(e); return e; };
+const fmt = n => n == null ? "n/a" : Math.round(n).toLocaleString("en-GB");
+const pc = (x, d = 0) => (x * 100).toFixed(d) + "%";
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const DOVE = id => `https://dove.cccbr.org.uk/tower/${id}`;
+const tip = document.getElementById("tip");
+function showTip(h, x, y) { tip.innerHTML = h; tip.style.display = "block"; const w = tip.offsetWidth; x = Math.max(w / 2 + 8, Math.min(innerWidth - w / 2 - 8, x)); tip.style.left = x + scrollX + "px"; tip.style.top = y + scrollY + "px"; }
+function hideTip() { tip.style.display = "none"; }
+function hover(node, h) { node.style.cursor = "pointer"; node.setAttribute("tabindex", "0"); const s = () => { const r = node.getBoundingClientRect(); showTip(h, r.left + r.width / 2, r.top); }; node.addEventListener("pointerenter", s); node.addEventListener("pointerleave", hideTip); node.addEventListener("focus", s); node.addEventListener("blur", hideTip); node.addEventListener("click", e => { s(); e.stopPropagation(); }); }
+document.addEventListener("click", hideTip);
+const redraws = [];
+function resp(box, render) { let last = 0; const go = (force) => { const w = Math.max(280, Math.round(box.clientWidth)); if (!force && Math.abs(w - last) < 4) return; last = w; box.innerHTML = ""; render(w, w < 560); }; new ResizeObserver(() => go()).observe(box); go(); redraws.push(() => go(true)); }
+const lbl = (svg, x, y, s, cls = "lab", anchor = "start") => { const t = el("text", { x, y, class: cls, "text-anchor": anchor }, svg); t.textContent = s; return t; };
+const isDark = () => { const r = document.documentElement; return r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches; };
+document.getElementById("theme").onclick = () => { const r = document.documentElement; r.dataset.theme = isDark() ? "light" : "dark"; redraws.forEach(f => f()); };
+
+/* hero mark: a bell, mouth up, with its rope circle */
+(() => { const g = document.getElementById("heroMark");
+  el("circle", { cx: 0, cy: 0, r: 92, fill: "none", stroke: "var(--hot)", "stroke-width": 3, "stroke-dasharray": "2 7", opacity: .7 }, g);
+  el("path", { d: "M-62 58 C-62 40 -50 30 -40 -10 C-34 -40 -22 -58 0 -60 C22 -58 34 -40 40 -10 C50 30 62 40 62 58 Z", fill: "var(--hot)" }, g);
+  el("rect", { x: -70, y: 56, width: 140, height: 10, rx: 4, fill: "var(--fg)" }, g);
+  el("rect", { x: -12, y: -76, width: 24, height: 18, rx: 4, fill: "var(--fg)" }, g);
+  el("path", { d: "M-30 -20 C-26 -38 -16 -48 -4 -50", stroke: "var(--bg)", "stroke-width": 4, fill: "none", opacity: .45, "stroke-linecap": "round" }, g);
+  el("circle", { cx: 0, cy: 80, r: 9, fill: "var(--fg)" }, g);
+})();
+
+/* ===== map ===== */
+const COLS = D.cols, PL = D.rows.map((a, i) => { const o = { i }; COLS.forEach((c, j) => o[c] = a[j]); o.countyN = D.counties[o.county]; o.countryN = D.countries[o.country]; o.groupN = D.groups[o.group]; return o; });
+const GRP = { "Loughborough": "Taylor of Loughborough", "Whitechapel": "Whitechapel (London)", "Rudhall": "Rudhall of Gloucester", "Warner": "Warner of London", "Gillett": "Gillett & Johnston", "West Country": "West Country founders" };
+const SZ = [["--s0", "3 to 5", p => p.bells <= 5], ["--s1", "6", p => p.bells === 6], ["--s2", "8", p => p.bells === 8], ["--s3", "10", p => p.bells === 10], ["--s4", "12 or more", p => true]];
+const AG = [["--s4", "before 1500", p => p.oldest != null && p.oldest < 1500], ["--s3", "1500 to 1699", p => p.oldest != null && p.oldest < 1700], ["--s2", "1700 to 1849", p => p.oldest != null && p.oldest < 1850], ["--s1", "1850 to 1945", p => p.oldest != null && p.oldest < 1946], ["--s0", "1946 or later", p => p.oldest != null]];
+const TN = [["--s0", "under 8 cwt", p => p.lbs != null && p.lbs < 896], ["--s1", "8 to 12 cwt", p => p.lbs != null && p.lbs < 1344], ["--s2", "12 to 20 cwt", p => p.lbs != null && p.lbs < 2240], ["--s3", "20 to 30 cwt", p => p.lbs != null && p.lbs < 3360], ["--s4", "30 cwt or more", p => p.lbs != null]];
+let mode = "size", lmap, markers = [], tiles;
+const CL = () => mode === "size" ? SZ : mode === "age" ? AG : TN;
+function rad(p, z) { const f = Math.pow(1.35, Math.min(z, 11) - 6); const base = p.light ? 1.2 : 1.3 + (p.bells - 3) * 0.28; return Math.max(1.6, Math.min(16, base * f)); }
+function palette() { return { s: ["--s0", "--s1", "--s2", "--s3", "--s4"].map(css), rn: css("--rn"), bg: css("--bg"), fg: css("--fg") }; }
+function colOf(p, pal) { const c = CL().find(c => c[2](p)); return c ? css(c[0]) : pal.rn; }
+function popup(p) {
+  const row = (k, v) => v == null || v === "" ? "" : `<dt>${k}</dt><dd>${v}</dd>`;
+  let h = `<div class="pop"><b class="t">${esc(p.place)}</b><div class="c">${esc(p.ded)}${p.ded ? ", " : ""}${esc([p.countyN, p.countryN].filter(Boolean).join(", "))}</div>`;
+  h += `<div class="big">${p.bells}<small>bells${p.light ? ", a lightweight ring" : ""}${p.ur ? ", marked unringable" : ""}</small></div>`;
+  h += `<dl>${row("Tenor", p.cwt ? `${p.cwt}${p.lbs ? " (" + fmt(p.lbs * 0.45359237) + " kg)" : ""}${p.note ? " in " + esc(p.note) : ""}` : null)}${row("Practice", p.practice ? esc(p.practice) : (p.ur ? null : "not listed"))}${row("Oldest bell", p.oldest != null ? (p.oldest < 1500 ? "medieval (" + Math.round(p.oldest) + ")" : Math.round(p.oldest)) : null)}${row("Newest bell", p.newest != null ? Math.round(p.newest) : null)}${row("Medieval bells", p.medieval || null)}${row("Main founder", p.groupN ? esc(GRP[p.groupN] || p.groupN) : null)}${row("Ringing room", p.gf ? "ground floor" : null)}</dl>`;
+  h += `<a href="${DOVE(p.tid)}" target="_blank" rel="noopener">Full record in Dove's Guide</a></div>`;
+  return h;
+}
+function legend() { const box = document.getElementById("legend");
+  box.innerHTML = `<span>${mode === "size" ? "Bells:" : mode === "age" ? "Oldest bell cast:" : "Tenor:"}</span>` + CL().map(c => `<span><i style="background:var(${c[0]})"></i>${c[1]}</span>`).join("") + `<span><i style="background:var(--rn)"></i>not known</span><span><i class="ring"></i>unringable (hollow)</span><span>Dot size = bells</span>`; }
+function restyle() { const pal = palette(), z = lmap.getZoom(); markers.forEach(m => { const c = colOf(m.p, pal); m.setStyle(m.p.ur ? { color: c, fillOpacity: 0, weight: 1.6, radius: rad(m.p, z) } : { fillColor: c, color: pal.bg, fillOpacity: .88, weight: .5, radius: rad(m.p, z) }); }); legend(); }
+function tileUrl() { return `https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_${isDark() ? "Dark" : "Light"}_Gray_Base/MapServer/tile/{z}/{y}/{x}`; }
+function km(a, b, c, d) { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.sqrt(x * x + y * y) * 6371; }
+function nearest(lat, lng, name) {
+  const L5 = PL.map(p => [km(lat, lng, p.lat, p.lon), p]).sort((a, b) => a[0] - b[0]).slice(0, 6);
+  return `<div class="pop"><b class="t">${esc(name)}</b><div class="c">Nearest rings of bells</div><ol>${L5.map(([d, p]) => `<li><a href="#" data-go="${p.i}">${esc(p.place)}</a>, ${p.bells} bells${p.ur ? " (unringable)" : ""}${p.practice ? ", practice " + esc(p.practice) : ""} <span style="color:var(--muted)">${d.toFixed(1)} km</span></li>`).join("")}</ol></div>`;
+}
+document.addEventListener("click", e => { const a = e.target.closest("a[data-go]"); if (a) { e.preventDefault(); const p = PL[+a.dataset.go]; lmap.setView([p.lat, p.lon], 14); setTimeout(() => p.m.openPopup(), 300); } });
+(() => {
+  if (!window.L) { document.getElementById("lmap").innerHTML = '<p style="padding:16px">The map library did not load.</p>'; return; }
+  lmap = L.map("lmap", { preferCanvas: true, zoomSnap: 0.5, minZoom: 2, maxZoom: 17, scrollWheelZoom: false, worldCopyJump: true });
+  lmap.fitBounds([[50.0, -5.8], [55.9, 1.8]], { padding: innerWidth < 600 ? [0, 0] : [10, 10] });
+  tiles = L.tileLayer(tileUrl(), { attribution: 'Tiles &copy; Esri', maxZoom: 16 }).addTo(lmap);
+  const rend = L.canvas({ padding: 0.5, tolerance: 3 }), pal = palette(), z = lmap.getZoom();
+  [...PL].sort((a, b) => a.bells - b.bells).forEach(p => {
+    const m = L.circleMarker([p.lat, p.lon], { renderer: rend, radius: rad(p, z), weight: .5, color: pal.bg, opacity: .95, fillColor: colOf(p, pal), fillOpacity: .88 });
+    m.p = p; m.bindPopup(() => popup(p), { maxWidth: 310, autoPanPadding: [20, 20] }); m.addTo(lmap); markers.push(m); p.m = m; });
+  restyle();
+  lmap.on("zoomend", restyle);
+  lmap.on("click focus", () => lmap.scrollWheelZoom.enable());
+  lmap.getContainer().addEventListener("mouseleave", () => lmap.scrollWheelZoom.disable());
+  document.querySelectorAll("[data-mode]").forEach(b => b.onclick = () => { mode = b.dataset.mode; document.querySelectorAll("[data-mode]").forEach(x => x.setAttribute("aria-pressed", x === b)); restyle(); });
+  redraws.push(() => { tiles.setUrl(tileUrl()); restyle(); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => redraws.forEach(f => f()));
+  document.getElementById("nearme").onclick = () => { if (!navigator.geolocation) return; navigator.geolocation.getCurrentPosition(pos => { const { latitude: a, longitude: b } = pos.coords; lmap.setView([a, b], 12); L.popup({ maxWidth: 320 }).setLatLng([a, b]).setContent(nearest(a, b, "You are here")).openOn(lmap); }); };
+})();
+
+/* search: towers (always) and OS Open Names places (loaded on first use) */
+const norm = s => s.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]/g, " ").replace(/\s+/g, " ").trim();
+let PS = null, psLoading = null;
+function loadPlaces() { if (PS) return Promise.resolve(PS); if (psLoading) return psLoading;
+  psLoading = fetch("data/places_search.json").then(r => r.json()).then(j => { PS = j.rows.map(a => ({ name: a[0], lat: a[1], lon: a[2], county: a[3], key: norm(a[0]) })); return PS; }).catch(() => { psLoading = null; return null; });
+  return psLoading; }
+(() => {
+  const q = document.getElementById("q"), sug = document.getElementById("sug");
+  PL.forEach(p => p.key = norm(p.place));
+  let list = [], sel = -1;
+  q.addEventListener("focus", () => loadPlaces());
+  function go(it) { sug.style.display = "none"; q.setAttribute("aria-expanded", "false");
+    if (it.p) { q.value = it.p.place; lmap.setView([it.p.lat, it.p.lon], 14); setTimeout(() => it.p.m.openPopup(), 300); }
+    else { q.value = it.s.name; lmap.setView([it.s.lat, it.s.lon], 12); setTimeout(() => L.popup({ maxWidth: 320 }).setLatLng([it.s.lat, it.s.lon]).setContent(nearest(it.s.lat, it.s.lon, it.s.name)).openOn(lmap), 300); } }
+  function render() { let h = "", last = "";
+    list.forEach((it, i) => { const k = it.p ? "Towers" : "Places: nearest rings"; if (k !== last) { h += `<li class="h" role="presentation">${k}</li>`; last = k; }
+      h += it.p ? `<li role="option" aria-selected="${i === sel}" data-i="${i}">${esc(it.p.place)} <span>${esc(it.p.ded)}, ${it.p.bells} bells, ${esc(it.p.countyN || it.p.countryN)}</span></li>`
+        : `<li role="option" aria-selected="${i === sel}" data-i="${i}">${esc(it.s.name)} <span>${esc(it.s.county)}</span></li>`; });
+    sug.innerHTML = h; sug.style.display = list.length ? "block" : "none"; q.setAttribute("aria-expanded", list.length > 0); }
+  function update() { const t = norm(q.value); sel = -1; if (t.length < 2) { list = []; render(); return; }
+    const a = PL.filter(p => p.key.startsWith(t)).sort((x, y) => y.bells - x.bells), b = PL.filter(p => !p.key.startsWith(t) && p.key.includes(t));
+    list = [...a, ...b].slice(0, 7).map(p => ({ p }));
+    if (PS) list = list.concat(PS.filter(s => s.key.startsWith(t)).slice(0, 5).map(s => ({ s })));
+    render(); }
+  q.addEventListener("input", () => { update(); if (!PS) loadPlaces().then(() => { if (document.activeElement === q) update(); }); });
+  q.addEventListener("keydown", e => { if (!list.length) return; if (e.key === "ArrowDown") { sel = Math.min(list.length - 1, sel + 1); render(); e.preventDefault(); } else if (e.key === "ArrowUp") { sel = Math.max(0, sel - 1); render(); e.preventDefault(); } else if (e.key === "Enter") { go(list[Math.max(0, sel)]); e.preventDefault(); } else if (e.key === "Escape") { list = []; render(); } });
+  sug.addEventListener("click", e => { const li = e.target.closest("li[data-i]"); if (li) go(list[+li.dataset.i]); e.stopPropagation(); });
+  document.addEventListener("click", e => { if (e.target !== q) { sug.style.display = "none"; q.setAttribute("aria-expanded", "false"); } });
+})();
+
+/* ===== charts ===== */
+function hbars(id, rows, opt = {}) {
+  resp(document.getElementById(id), (W, nar) => {
+    const rowH = opt.rowH || 30, m = { l: nar ? 0 : (opt.l || 170), r: 70, t: 4, b: 6 }, step = nar ? rowH + 14 : rowH, H = rows.length * step + m.t + m.b;
+    const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": opt.aria || "" }, document.getElementById(id));
+    const max = opt.max || Math.max(...rows.map(r => (r.v + (r.v2 || 0)))), X = v => m.l + v / max * (W - m.l - m.r);
+    rows.forEach((r, i) => { const y = m.t + i * step + (nar ? 14 : 0);
+      lbl(svg, nar ? 0 : m.l - 10, nar ? y - 3 : y + 15, r.k, "lab", nar ? "start" : "end");
+      const b = el("rect", { x: m.l, y: y + 3, width: Math.max(2, X(r.v) - m.l), height: rowH - 10, rx: 2, fill: r.c || "var(--hot)" }, svg);
+      if (r.v2) el("rect", { x: X(r.v), y: y + 3, width: Math.max(1, X(r.v + r.v2) - X(r.v)), height: rowH - 10, fill: r.c || "var(--hot)", opacity: .32 }, svg);
+      if (r.t) hover(b, r.t);
+      lbl(svg, X(r.v + (r.v2 || 0)) + 6, y + 15, r.lab || fmt(r.v), "lab b"); });
+  });
+}
+hbars("sizes", R.sizes.map(s => ({ k: s.bells + " bells", v: s.n - s.unringable, v2: s.unringable, lab: fmt(s.n), c: s.bells >= 12 ? "var(--s4)" : s.bells >= 10 ? "var(--s3)" : s.bells >= 8 ? "var(--s2)" : s.bells === 6 ? "var(--s1)" : "var(--s0)", t: `<b>${s.bells} bells</b><br>${fmt(s.n)} rings (${pc(s.share, 1)})<br>${fmt(s.unringable)} unringable (${pc(s.ur_share)})<br>median tenor ${fmt(s.median_tenor * 0.45359237)} kg` })), { l: 90, rowH: 24, aria: "Rings by number of bells" });
+hbars("days", R.practice.days.map(d => ({ k: { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" }[d.day], v: d.n, c: ["Sat", "Sun"].includes(d.day) ? "var(--rn)" : "var(--hot)" })), { l: 110, rowH: 26, aria: "Practice nights" });
+hbars("countries", R.countries.filter(c => c.country !== "England").map(c => ({ k: c.country, v: c.rings, c: ["Wales", "Scotland", "Ireland", "Channel Islands", "Isle of Man"].includes(c.country) ? "var(--s2)" : "var(--verd)", t: `<b>${esc(c.country)}</b><br>${fmt(c.rings)} rings, ${fmt(c.bells)} bells` })), { l: 140, rowH: 22, aria: "Rings outside England" });
+
+/* counties */
+(() => { let k = "share"; const H3 = document.getElementById("cH"), S = document.getElementById("cS");
+  function draw() { document.getElementById("counties").innerHTML = "";
+    let rows = R.counties.filter(c => c.nation !== "Scotland");
+    if (k === "share") { rows = rows.filter(c => c.churches >= 100 && c.share != null).sort((a, b) => b.share - a.share);
+      H3.textContent = "Share of Anglican churches with a ring of bells"; S.textContent = "Counties with at least 100 mapped Anglican churches. Green: Wales.";
+      hbars("counties", rows.map(c => ({ k: c.county, v: c.share, lab: pc(c.share), c: c.nation === "Wales" ? "var(--verd)" : "var(--hot)", t: `<b>${esc(c.county)}</b><br>${fmt(c.churches)} Anglican churches mapped<br>${pc(c.share)} with a ring within 150 m<br>${fmt(c.rings)} rings in the county` })), { rowH: 20, l: 170, max: 1, aria: H3.textContent }); }
+    else { rows = rows.sort((a, b) => b.per100 - a.per100);
+      H3.textContent = "Rings per 100 square kilometres"; S.textContent = "All counties of England and Wales. Small urban counties (Bristol, London, the West Midlands) sit high because they are small. Green: Wales.";
+      hbars("counties", rows.map(c => ({ k: c.county, v: c.per100, lab: c.per100.toFixed(1), c: c.nation === "Wales" ? "var(--verd)" : "var(--hot)", t: `<b>${esc(c.county)}</b><br>${fmt(c.rings)} rings<br>${c.per100.toFixed(2)} per 100 km²<br>${fmt(c.medieval)} bells cast before 1500` })), { rowH: 20, l: 170, aria: H3.textContent }); } }
+  document.querySelectorAll("[data-c]").forEach(b => b.onclick = () => { k = b.dataset.c; document.querySelectorAll("[data-c]").forEach(x => x.setAttribute("aria-pressed", x === b)); draw(); });
+  draw(); })();
+
+/* growth lines */
+resp(document.getElementById("growth"), (W, nar) => {
+  const H = nar ? 260 : 300, m = { l: 44, r: nar ? 60 : 80, t: 12, b: 30 }, G = R.growth, yrs = G.years;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Cumulative rings of 8, 10 and 12 bells by year of newest bell" }, document.getElementById("growth"));
+  const x0 = 1700, X = y => m.l + (y - x0) / (2025 - x0) * (W - m.l - m.r), max = Math.max(...G.sizes.filter(s => s.bells >= 8).map(s => s.n)), Y = v => H - m.b - v / max * (H - m.t - m.b);
+  [0, 500, 1000, 1500, 2000].filter(t => t <= max).forEach(t => { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, fmt(t), "lab m s", "end"); });
+  [1700, 1750, 1800, 1850, 1900, 1950, 2000].forEach(y => lbl(svg, X(y), H - m.b + 16, y, "lab m s", "middle"));
+  const cols = { 8: "var(--s2)", 10: "var(--s3)", 12: "var(--s4)" };
+  G.sizes.filter(s => s.bells >= 8).forEach(s => { let d = ""; yrs.forEach((y, i) => { if (y >= x0) d += (d ? "L" : "M") + X(y).toFixed(1) + " " + Y(s.cum[i]).toFixed(1); });
+    el("path", { d, fill: "none", stroke: cols[s.bells], "stroke-width": 2.6 }, svg);
+    const last = s.cum[s.cum.length - 1]; lbl(svg, X(2025) + 6, Y(last) + 4, `${s.bells}s: ${fmt(last)}`, "lab b"); });
+});
+
+/* founders stacked columns */
+const FC = { "Whitechapel": "var(--f1)", "Taylor": "var(--f2)", "Rudhall": "var(--f3)", "Warner": "var(--f4)", "Gillett & Johnston": "var(--f5)", "West Country": "var(--f6)", "Other founders": "var(--fo)", "Unknown": "var(--rn)" };
+resp(document.getElementById("founders"), (W, nar) => {
+  const F = R.founders_period, H = nar ? 300 : 340, m = { l: 48, r: 10, t: 10, b: nar ? 96 : 64 }, n = F.bins.length;
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Bells in rings by period and foundry" }, document.getElementById("founders"));
+  const tot = F.bins.map((b, i) => F.fams.reduce((s, f) => s + F.n[f][i], 0)), max = Math.max(...tot), bw = (W - m.l - m.r) / n, Y = v => H - m.b - v / max * (H - m.t - m.b);
+  [0, 2500, 5000, 7500].filter(t => t <= max).forEach(t => { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, fmt(t), "lab m s", "end"); });
+  F.bins.forEach((b, i) => { let acc = 0; const x = m.l + i * bw;
+    F.fams.forEach(f => { const v = F.n[f][i]; if (!v) return; const r = el("rect", { x: x + 1, y: Y(acc + v), width: Math.max(1, bw - 2), height: Y(acc) - Y(acc + v), fill: FC[f] }, svg);
+      hover(r, `<b>${b} to ${b + 24}</b><br>${f}: ${fmt(v)} bells<br>all founders: ${fmt(tot[i])}`); acc += v; });
+    if (b % (nar ? 100 : 50) === 0) lbl(svg, x, H - m.b + 15, b, "lab m s", "start"); });
+  let lx = m.l, ly = H - m.b + 36; F.fams.forEach(f => { const w = f.length * 7.2 + 28; if (lx + w > W) { lx = m.l; ly += 18; } el("rect", { x: lx, y: ly - 9, width: 11, height: 11, fill: FC[f] }, svg); lbl(svg, lx + 16, ly, f, "lab s"); lx += w; });
+});
+
+/* years columns */
+resp(document.getElementById("years"), (W, nar) => {
+  const C = R.cast_years, y0 = 1800, H = nar ? 280 : 320, m = { l: 40, r: 10, t: 34, b: 28 };
+  const vals = C.n.slice(y0 - C.start), n = vals.length, max = Math.max(...vals), bw = (W - m.l - m.r) / n, Y = v => H - m.b - v / max * (H - m.t - m.b);
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Bells in rings by year cast, 1800 to 2025" }, document.getElementById("years"));
+  [0, 100, 200, 300, 400].filter(t => t <= max).forEach(t => { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, t, "lab m s", "end"); });
+  [[1914.5, 1918.5], [1939.5, 1945.5]].forEach(([a, b]) => el("rect", { x: m.l + (a - y0) * bw, y: m.t - 8, width: (b - a) * bw, height: H - m.b - m.t + 8, fill: "var(--panel)" }, svg));
+  const EVY = R.events.map(e => e.year);
+  vals.forEach((v, i) => { const y = y0 + i, ev = EVY.includes(y); const r = el("rect", { x: m.l + i * bw, y: Y(v), width: Math.max(1, bw - (bw > 3 ? .6 : 0)), height: H - m.b - Y(v), fill: ev ? "var(--hot)" : "var(--s1)" }, svg);
+    hover(r, `<b>${y}</b><br>${fmt(v)} bells${ev ? "<br>" + R.events.find(e => e.year === y).label : ""}`); });
+  for (let y = y0; y <= 2025; y += nar ? 50 : 25) lbl(svg, m.l + (y - y0 + .5) * bw, H - m.b + 16, y, "lab m s", "middle");
+  const show = nar ? [1887, 1897, 1937, 2000] : [1887, 1897, 1902, 1911, 1937, 1953, 2000];
+  R.events.filter(e => show.includes(e.year)).forEach(e => { const x = m.l + (e.year - y0 + .5) * bw; lbl(svg, x, Y(e.n) - 6, e.year, "lab s b", "middle"); });
+  lbl(svg, m.l + (1916.5 - y0) * bw, m.t - 14, "1914 to 1918", "lab m s", "middle"); lbl(svg, m.l + (1942.5 - y0) * bw, m.t - 14 + (nar ? 12 : 0), "1939 to 1945", "lab m s", "middle");
+});
+
+/* frames */
+resp(document.getElementById("frames"), (W, nar) => {
+  const F = R.frames, H = nar ? 230 : 260, m = { l: 40, r: 10, t: 10, b: 52 }, n = F.bins.length, mats = ["timber", "cast iron", "steel"], FCOL = { "timber": "var(--s2)", "cast iron": "var(--fg)", "steel": "var(--ink)" };
+  const svg = el("svg", { viewBox: `0 0 ${W} ${H}`, role: "img", "aria-label": "Bell frames by date and material" }, document.getElementById("frames"));
+  const tot = F.bins.map((b, i) => mats.reduce((s, k) => s + F.n_by[k][i], 0)), max = Math.max(...tot), bw = (W - m.l - m.r) / n, Y = v => H - m.b - v / max * (H - m.t - m.b);
+  [0, 250, 500, 750, 1000].filter(t => t <= max).forEach(t => { el("line", { x1: m.l, x2: W - m.r, y1: Y(t), y2: Y(t), stroke: "var(--rule)" }, svg); lbl(svg, m.l - 6, Y(t) + 4, fmt(t), "lab m s", "end"); });
+  F.bins.forEach((b, i) => { let acc = 0; mats.forEach(k => { const v = F.n_by[k][i]; if (!v) return; const r = el("rect", { x: m.l + i * bw + 1, y: Y(acc + v), width: Math.max(1, bw - 2), height: Y(acc) - Y(acc + v), fill: FCOL[k] }, svg); hover(r, `<b>${b} to ${b + 24}</b><br>${k}: ${fmt(v)} frames`); acc += v; });
+    if (b % 100 === 0) lbl(svg, m.l + i * bw, H - m.b + 15, b, "lab m s"); });
+  let lx = m.l; mats.forEach(k => { el("rect", { x: lx, y: H - 18, width: 11, height: 11, fill: FCOL[k] }, svg); lbl(svg, lx + 16, H - 8, k, "lab s"); lx += k.length * 7.5 + 34; });
+});
+
+/* tables */
+document.getElementById("heaviest").innerHTML = `<thead><tr><th class="num">#</th><th>Tower</th><th class="num">Bells</th><th class="num">Tenor</th><th class="num wide">kg</th><th class="wide">Note</th></tr></thead><tbody>` +
+  R.heaviest.map((r, i) => `<tr><td class="num">${i + 1}</td><td>${esc(r.place)}<small>${esc(r.dedication)}${r.country !== "England" ? ", " + esc(r.country) : ""}</small></td><td class="num">${r.bells}</td><td class="num">${r.tenor_cwt}</td><td class="num wide">${fmt(r.tenor_kg)}</td><td class="wide">${esc(r.note)}</td></tr>`).join("") + "</tbody>";
+document.getElementById("oldest").innerHTML = `<thead><tr><th class="num">Year</th><th>Tower</th><th class="wide">Founder</th><th class="num">Bell</th></tr></thead><tbody>` +
+  R.oldest_dated.map(r => `<tr><td class="num">${r.year}</td><td>${esc(r.place)}<small>${esc(r.dedication)}, ${esc(r.county || r.country)}</small></td><td class="wide">${esc(r.founder)}</td><td class="num">${esc(r.role)} of ${r.ring_bells}</td></tr>`).join("") + "</tbody>";
+</script>
+</body>
+</html>

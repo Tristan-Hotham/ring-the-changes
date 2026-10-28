@@ -1,0 +1,203 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\setmainfont{TeX Gyre Pagella}
+\newfontfamily\headfont{Inter}[UprightFont=*-ExtraBold,BoldFont=*-ExtraBold,Extension=.otf,Path=/usr/share/fonts/opentype/inter/]
+\usepackage[a4paper,margin=2.3cm]{geometry}
+\usepackage{graphicx,booktabs,float,caption,array}
+\usepackage[hidelinks]{hyperref}
+\usepackage{titlesec}
+\usepackage{setspace}
+\setstretch{1.05}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\floatpagefraction}{0.75}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+\titleformat{\section}{\headfont\Large}{\thesection}{0.8em}{}
+\titleformat{\subsection}{\headfont\large}{\thesubsection}{0.8em}{}
+\captionsetup{font=small,labelfont=bf}
+\urlstyle{same}
+\hypersetup{pdftitle={Ring the Changes: Where England's Bells Hang},pdfauthor={Tristan Hotham}}
+
+\begin{document}
+\begin{center}
+{\Large\bfseries Ring the Changes: Where England's Bells Hang.\\[2pt] A Data Study of Dove's Guide for Church Bell Ringers\par}
+\vspace{1.2em}
+{\large Tristan Hotham\par}
+\vspace{0.3em}
+{\small Independent researcher\\
+ORCID: 0000-0003-4931-9349\\
+DOI: \href{https://doi.org/10.5281/zenodo.23729641}{https://doi.org/10.5281/zenodo.23729641}\par}
+\vspace{0.8em}
+2026
+\end{center}
+
+\begin{quote}
+\small
+\begin{center}\textbf{Abstract}\end{center}
+Change ringing on bells hung for full-circle ringing is an English invention of the seventeenth century and remains overwhelmingly English. I use the open data of Dove's Guide for Church Bell Ringers, published by the Central Council of Church Bell Ringers under CC BY-SA 4.0, to describe every ring of three or more bells it lists: {{counts.rings|int}} rings holding {{counts.bells|int}} bells, with records for {{counts.bell_records|int}} individual bells. {{counts.england_share|pct0}} of the rings are in England. Against OpenStreetMap's Anglican churches, {{geo.anglican_share|pct0}} of churches in England and Wales have a ring, from {{county_share_top.0.share|pct0}} in Northamptonshire to {{county_share_bottom.5.share|pct0}} in Gwynedd. Six-bell rings are the norm ({{size_groups.six_share|pct0}}); rings of ten and twelve are recent, with {{growth_by.12.share_since1950|pct0}} of twelves containing a bell cast since 1950. The median bell in a ring was cast in {{ages.median_year|raw}}, but {{ages.before1500|int}} bells are dated or judged to be medieval, and the oldest bell with a single cast year is dated {{oldest_dated_first.year|raw}}. The Whitechapel and Taylor foundry families cast {{founders.big2_share|pct0}} of all bells now hanging in rings. Bells by year of casting trace national history: the peak years are Victoria's Diamond and Golden Jubilees ({{event.1897.n|int}} and {{event.1887.n|int}} bells, about twice the surrounding years), the coronation of 1937 doubles its neighbours, and no surviving ring bell was cast in 1943 or 1944. Because Dove records only bells that survive in rings, these are patterns of survival as well as of founding.
+
+\textbf{Keywords:} church bells; change ringing; bell founding; Dove's Guide; open data; England; parish churches; jubilees; Second World War
+\end{quote}
+
+\section{Introduction}
+
+Some time in the early seventeenth century English ringers found that a church bell swung through a full circle, rather than chimed through a small arc, could be held at the balance and so controlled closely in time. A band could then make a set of bells strike in a different order at every pull, and ``ringing the changes'' was born. By 1668, when Richard Duckworth and Fabian Stedman published \textit{Tintinnalogia}, method ringing had written rules (Duckworth and Stedman 1668; Wikipedia, ``Change ringing''). The craft spread with the Church of England and its colonies but never far beyond them, and it has remained an English art practised in parish church towers.
+
+Since 1950 ringers have found those towers through Dove's Guide, first compiled by Ronald Dove, who visited and rang at nearly all of them (Wikipedia, ``Dove's Guide for Church Bell Ringers''). The guide is now an online database maintained by the Central Council of Church Bell Ringers (CCCBR), and its tables can be downloaded under a Creative Commons Attribution ShareAlike licence. Beyond the essentials a ringer needs (where the tower is, how many bells, the weight of the heaviest, the practice night), it records each bell's weight, note, founder and cast date, and each bell frame's date and material.
+
+That makes Dove an unusual historical source: a near complete inventory of a class of objects, many centuries old, still in use, and catalogued to a common standard by people who climb the towers. This note asks four simple questions of it. Where are the rings, and how does their density vary? How big are they, and when did the large rings appear? How old are the bells, and who cast them? And does the record of casting dates carry the marks of national events? An interactive version of the study, with a searchable map of every ring, is at \url{https://tristan-hotham.github.io/ring-the-changes/}.
+
+\section{Data}
+
+\subsection{Dove's Guide}
+
+I downloaded the Dove tables on {{counts.retrieved_text|raw}}. The rings table lists {{counts.rings|int}} rings of three or more bells hung for full-circle ringing, of which {{counts.lightweight|int}} are lightweight or mini rings (tenors of at most {{tenor.lightweight_max_lbs|int}} lb) and {{counts.full_circle|int}} are conventional rings. They hang in {{counts.towers|int}} towers; {{counts.towers_two_rings|int}} towers have two rings. For each ring the table gives coordinates (missing for {{counts.no_coords|int}}, mostly small mobile or private rings), county and country, number of bells, a flag for rings that cannot currently be rung, the tenor's weight and note, practice night, and the listed status of the building.
+
+The bells table holds one row per bell. Restricted to bells in those rings and leaving out sanctus and service bells, it has {{counts.bell_records|int}} rows (slightly more than the {{counts.bells|int}} bells counted in the rings table, because some rings carry extra semitone bells). For {{ages.with_year|int}} bells there is a cast date. I read a single year, sometimes bracketed or followed by a second bracketed year, as a dated bell ({{ages.dated|int}} bells); a date prefixed ``c'' as approximate at the year given ({{ages.circa|int}}); a bracketed range at its midpoint; and ``from'' or ``to'' bounds at the year given. Many medieval bells carry conventional style dates: {{ages.c1499|int}} are dated ``c1499''. The founders table groups individual founders into foundry families (its Group column), which I use without change. The frames table gives each bell frame's date, materials and maker.
+
+\subsection{Other sources}
+
+For the share of churches with a ring I use OpenStreetMap places of worship tagged Christian whose denomination is Anglican, Church of England or Church in Wales: {{geo.anglican_osm|int}} in England and Wales. Churches with no denomination tag are left out, so the denominator is incomplete and probably more so in some counties than others. Rings and churches are placed in counties (ceremonial counties in England, preserved counties in Wales) by point in polygon, using boundaries built from Office for National Statistics local authority boundaries for my earlier Roman roads study. The place search on the interactive page uses OS Open Names. Historical context comes from the English Wikipedia articles cited.
+
+\section{Methods}
+
+The analysis is descriptive. Counts and shares are computed directly from the Dove tables. Specific choices are as follows.
+
+\textbf{Churches with a ring.} An OpenStreetMap Anglican church is counted as having a ring if a Dove ring lies within 150 m of its centroid. Conversely, {{geo.ring_near_anglican_share|pct0}} of Dove rings in England and Wales have a mapped Anglican church within 150 m, which suggests the matching works well; the remainder are mostly in Roman Catholic churches, secular towers and buildings mapped without a denomination.
+
+\textbf{Distances.} Distances between rings are measured on the British National Grid, for the {{geo.n_ew|int}} rings in England and Wales with coordinates.
+
+\textbf{When rings reached their present size.} Dove does not record augmentations. A ring cannot have existed in its present form before its newest bell was cast, so the year of the newest bell is an upper bound on that date. A bell recast later, after a crack for instance, pushes the date forward, so the true dates are earlier, sometimes much earlier.
+
+\textbf{Casting years.} Counts of bells by year use dated bells only. Peaks are compared with the mean of the three years either side. The founders chart and the age statistics use every bell with a year of any kind.
+
+\textbf{Frames.} Frame materials are grouped into timber (oak, timber and other woods), cast iron (including a few iron and timber composites) and steel (including iron and steel composites).
+
+\section{Results}
+
+\subsection{Where the rings are}
+
+Of the {{counts.rings|int}} rings, {{counts.england|int}} are in England, {{counts.wales|int}} in Wales, {{counts.ireland|int}} on the island of Ireland and {{counts.scotland|int}} in Scotland; {{counts.outside_british_isles|int}} lie outside the British Isles (Section 4.7). Figure~\ref{fig:map} maps them. Devon has the most rings ({{county_most.0.rings|int}}), then Somerset ({{county_most.1.rings|int}}) and Lincolnshire ({{county_most.2.rings|int}}). By area, among counties of at least 1,000 km\textsuperscript{2}, Greater London ({{county_density_top.0.per100|f1}} per 100 km\textsuperscript{2}), Leicestershire ({{county_density_top.1.per100|f1}}), Northamptonshire ({{county_density_top.2.per100|f1}}) and Somerset ({{county_density_top.3.per100|f1}}) are densest; Northumberland ({{county_density_bottom.3.per100|f2}}) and Gwynedd ({{county_density_bottom.4.per100|f2}}) are sparsest.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=0.82\textwidth]{f_map.png}
+\caption{Rings of bells in Dove's Guide in Great Britain, Ireland and the Isle of Man, by number of bells. Larger, darker dots are larger rings.}\label{fig:map}
+\end{figure}
+
+Counting churches gives a sharper picture (Figure~\ref{fig:share}). Of {{geo.anglican_osm|int}} mapped Anglican churches in England and Wales, {{geo.anglican_with_ring|int}} ({{geo.anglican_share|pct0}}) have a ring. Northamptonshire ({{county_share_top.0.share|pct0}}), Devon ({{county_share_top.1.share|pct0}}), Somerset ({{county_share_top.2.share|pct0}}) and Leicestershire ({{county_share_top.3.share|pct0}}) lead. The north east of England and north and west Wales trail: Tyne and Wear {{county_share_bottom.2.share|pct0}}, Dyfed {{county_share_bottom.3.share|pct0}}, Northumberland {{county_share_bottom.4.share|pct0}} and Gwynedd {{county_share_bottom.5.share|pct0}}. Industrial and urban counties sit low as well (Greater Manchester {{county_share_bottom.1.share|pct0}}).
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=0.78\textwidth]{f_share.png}
+\caption{Share of OpenStreetMap Anglican churches with a Dove ring within 150 m, by county (England and Wales). Counties with fewer than 100 mapped Anglican churches are grey.}\label{fig:share}
+\end{figure}
+
+The rings are close together. The median distance from a ring to the nearest other ring is {{geo.nn_median_km|f1}} km; {{geo.nn_within3|pct0}} are within 3 km of another and only {{geo.nn_over5|pct1}} are more than 5 km from the next. The most isolated is at Hugh Town on the Isles of Scilly, {{geo.nn_max_km|f1}} km from its nearest neighbour.
+
+\subsection{Ring sizes}
+
+Table~\ref{tab:sizes} gives the distribution of ring sizes. Six is the norm: {{size_groups.six|int}} rings ({{size_groups.six_share|pct0}}). There are {{size_groups.eight|int}} eights, {{size_groups.ten|int}} tens and {{size_groups.twelve|int}} twelves, and {{size_groups.over12|words}} towers with fourteen to sixteen bells, most including semitone bells. Rings of three to five bells ({{size_groups.small|int}}, {{size_groups.small_share|pct0}} of all) account for {{unringable.small_share_of_ur|pct0}} of the {{unringable.n|int}} rings marked unringable: {{unringable.three_share|pct0}} of rings of three cannot be rung, against {{unringable.six_share|pct1}} of sixes and {{unringable.eight_share|pct1}} of eights. The median tenor weighs {{tenor.median_lbs|int}} lb (about {{tenor.median_cwt|raw}} cwt, {{tenor.median_kg|int}} kg) and rises steadily with ring size.
+
+{{TABLE_SIZES}}
+
+Large rings are young (Figure~\ref{fig:growth}). For twelves, the median year of the newest bell is {{growth_by.12.median_newest|raw}}, and {{growth_by.12.since1950|int}} of {{growth_by.12.n|int}} have a bell cast since 1950; only {{growth_by.12.before1900|words}} could have existed in present form before 1900. For tens the median is {{growth_by.10.median_newest|raw}} ({{growth_by.10.share_since1950|pct0}} with a bell since 1950); for eights {{growth_by.8.median_newest|raw}}; for sixes {{growth_by.6.median_newest|raw}}. Since recasting pushes these dates forward, the true chronology of augmentation is earlier, but the ordering by size is unlikely to be an artefact: the twelve-bell ring is largely a twentieth-century creation, and mostly a late twentieth-century one.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=0.9\textwidth]{f_growth.png}
+\caption{Present rings of 8 (solid), 10 (dashed) and 12 bells (dash-dot) whose newest bell had been cast by each year: an upper bound on when each ring reached its present size.}\label{fig:growth}
+\end{figure}
+
+\subsection{Heaviest rings}
+
+{{tenor.over_ton|int}} rings have a tenor of a ton (2,240 lb) or more and {{tenor.over_2ton|int}} of two tons or more. The heaviest are at Liverpool Cathedral ({{heaviest.0.tenor_cwt|raw}}, {{heaviest.0.tenor_kg|int}} kg), Exeter Cathedral ({{heaviest.1.tenor_cwt|raw}}), St Paul's Cathedral in London ({{heaviest.2.tenor_cwt|raw}}) and York Minster ({{heaviest.3.tenor_cwt|raw}}).
+
+\subsection{The age of the bells}
+
+The median bell in a ring was cast in {{ages.median_year|raw}}. {{ages.before1800_share|pct0}} were cast before 1800 and {{ages.since1900_share|pct0}} since 1900; {{ages.c21|int}} date from this century. {{ages.before1500|int}} bells ({{ages.before1500_share|pct1}}) are dated or judged to be earlier than 1500, in {{ages.medieval_rings|int}} rings; Suffolk ({{ages.medieval_top_counties.0.n|int}}), Norfolk ({{ages.medieval_top_counties.1.n|int}}), Devon ({{ages.medieval_top_counties.2.n|int}}) and Somerset ({{ages.medieval_top_counties.3.n|int}}) have the most. Table~\ref{tab:oldest} lists the oldest bells with a single cast year. The earliest is the fourth of six at Cold Ashby, Northamptonshire, dated {{oldest_dated_first.year|raw}}.
+
+{{TABLE_OLDEST}}
+
+\subsection{The founders}
+
+Dove names {{founders.n_founders|int}} founders for bells in rings. Figure~\ref{fig:founders} shows the surviving bells by 25-year period and foundry family. Before about 1700 the trade was dispersed among many small foundries. The Rudhall foundry of Gloucester dominates the early eighteenth century ({{founders.rudhall|int}} of its bells survive in rings, with a median date of {{founders.rudhall_peak|raw}}). From the early nineteenth century the Whitechapel foundry in London and, from the mid nineteenth century, the Taylor foundry at Loughborough take the largest shares, with John Warner \& Sons of London prominent in the later nineteenth century and Gillett \& Johnston of Croydon in the early twentieth. Together the Whitechapel and Taylor families account for {{founders.taylor|int}} and {{founders.whitechapel|int}} bells, {{founders.big2_share|pct0}} of all bells in rings, and {{founders.c20_big2_share|pct0}} of those cast in the twentieth century. Whitechapel's last bells in the data are dated {{founders.whitechapel_last|raw}}, the year the foundry closed (Wikipedia, ``Whitechapel Bell Foundry''). Of {{founders.since2018_n|int}} bells cast since 2018, {{founders.since2018_taylor_share|pct0}} are from Taylor.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=\textwidth]{f_founders.png}
+\caption{Bells now hanging in rings by 25-year period of casting and foundry family (Dove's founders groups). Bells with approximate dates are placed at the date given.}\label{fig:founders}
+\end{figure}
+
+\subsection{Jubilees, coronations and wars}
+
+Figure~\ref{fig:years} counts dated bells by year from 1800. The two largest years are 1897, Queen Victoria's Diamond Jubilee, with {{event.1897.n|int}} bells, and 1887, her Golden Jubilee, with {{event.1887.n|int}}, each about twice the mean of the surrounding years (Table~\ref{tab:events}). The coronation year 1937 shows a similar ratio ({{event.1937.ratio|f2}}), and 1902 and 1911 rise clearly above their neighbours. The pattern weakens after 1945: the coronation of 1953 is only {{event.1953.ratio|f2}} times its neighbours, the Millennium {{event.2000.ratio|f2}}, and the Golden Jubilee of 2002 sits below the surrounding years ({{event.2002.ratio|f2}}).
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=\textwidth]{f_years.png}
+\caption{Bells in rings by year of casting, 1800 to 2025 (dated bells only). Darker bars: jubilee, coronation and Millennium years. Shaded: the two world wars.}\label{fig:years}
+\end{figure}
+
+{{TABLE_EVENTS}}
+
+The world wars are unmistakable. In 1910 to 1914 an average of {{wars.pre1|int}} surviving bells were cast each year; in 1915 to 1918 the average was {{wars.ww1|int}}, and {{wars.y1918|int}} in 1918. In the Second World War church bells in Britain were silenced, to be rung only as a warning of invasion, until the ban was eased in 1942 and 1943 (Wikipedia, ``Church bell''). Only {{wars.ww2_total|int}} surviving ring bells were cast from 1940 to 1945: {{wars.y1941|int}} in 1941, {{wars.y1942|int}} in 1942 and none in 1943 or 1944. In 1946 there were {{wars.y1946|int}}. The busiest decade overall is the {{decades.peak_decade|raw}}s ({{decades.peak_n|int}} bells), closely followed by the 1900s ({{decades.d1900s|int}}).
+
+\subsection{Frames, practice and the world beyond England}
+
+Bell frames show a clean sequence of materials (Figure~\ref{fig:frames}). Before 1850, {{frames.timber_share_pre1850|pct0}} of surviving frames are timber; from 1875 to 1949, {{frames.iron_share_1875_1950|pct0}} are cast iron; since 1975, {{frames.steel_share_since1975|pct0}} are steel and only {{frames.timber_share_since1975|pct0}} timber.
+
+\begin{figure}[tbp]\centering
+\includegraphics[width=0.9\textwidth]{f_frames.png}
+\caption{Bell frames in towers with a ring, by 25-year period and material.}\label{fig:frames}
+\end{figure}
+
+{{practice.listed|int}} rings list a practice night, {{practice.listed_share_ringable|pct0}} of the ringable rings. {{practice.midweek_share|pct0}} of practices fall from Monday to Thursday; Tuesday is the most common day by a small margin. {{extras.ground_floor|int}} rings ({{extras.ground_floor_share|pct0}}) are rung from the ground floor and {{extras.simulator|int}} have a ringing simulator. In England, {{extras.grade1_share_eng|pct0}} of rings hang in Grade I listed buildings and {{extras.listed_share_eng|pct0}} in listed buildings of any grade. St Mary is the commonest dedication ({{dedications.mary|int}} English rings, {{dedications.mary_share|pct0}}), as it is among all churches in the United Kingdom ({{saints.mary_share|pct0}} in Hotham 2026).
+
+Outside the British Isles there are {{abroad.n|int}} rings in {{abroad.countries|int}} countries: {{abroad.australia|int}} in Australia, {{abroad.usa|int}} in the United States, {{abroad.nz|int}} in New Zealand, {{abroad.canada|int}} in Canada and {{abroad.sa|int}} in South Africa. These rings are large ({{abroad.eights_plus_share|pct0}} have eight bells or more) and recent (median newest bell {{abroad.median_newest|raw}}). The oldest bell in an American ring was cast in {{abroad.oldest_usa.year|raw}} for Christ Church (Old North), Boston; the oldest in an Australian ring, at the Bell Tower in Perth, is dated {{abroad.oldest_australia.year|raw}}.
+
+\section{Discussion}
+
+Three findings stand out. First, the geography of rings is not simply the geography of churches. A Devon or Northamptonshire parish church is more likely than not to have a ring; one in Northumberland or Gwynedd almost never does. Dove alone cannot say why, but the contrast is large and it is consistent with ringing as a regional culture, strongest in the south west and the south Midlands, rather than a uniform feature of the Church of England.
+
+Second, the record of casting is a record of survival filtered through two forces. One is renewal: bells crack, are recast and are augmented into larger rings, so the stock is young (median {{ages.median_year|raw}}) and the largest rings are the youngest. The other is commemoration. The jubilee and coronation peaks of 1887 to 1937 suggest that new bells and augmentations were a favoured way for parishes to mark national occasions, and the peak of the 1920s may in part reflect memorial bells after the First World War. That interpretation fits the timing, but Dove does not record the reason a bell was cast, and inscriptions, faculty papers and parish histories would be needed to test it bell by bell.
+
+Third, the industry concentrated. Many local founders gave way to a few national ones, and by the twentieth century two foundry families cast four bells in five. With Whitechapel closed in 2017, almost half of new ring bells since 2018 have come from Loughborough.
+
+\section{Limitations}
+
+Dove records rings and bells that exist now. Bells that were recast, sold, scrapped or lost are absent, so every historical pattern here combines what was cast with what survived; older periods are under-represented by construction. Cast dates for medieval bells are often stylistic estimates. The newest-bell date is only an upper bound on when a ring took its present form. Founder attributions are Dove's, and its founder groups are its own. Practice nights are as towers report them and change often. The church denominator comes from volunteer mapping in OpenStreetMap and leaves out churches without a denomination tag, so county shares are approximate and could be biased where tagging is thinner. All findings are descriptive; none is causal.
+
+\section{Conclusion}
+
+Dove's Guide shows {{counts.rings|int}} rings and {{counts.bells|int}} bells, {{counts.england_share|pct0}} of the rings in England and most of those in the south and Midlands. The typical ring is a six with a tenor of about {{tenor.median_cwt|raw}} cwt, its bells cast around the late nineteenth century by Whitechapel or Taylor, hung in an iron or steel frame, and practised on a midweek evening. Underneath that typical ring lie {{ages.before1500|int}} medieval bells, and on top of it the national calendar: jubilees, coronations and the silence of 1943 and 1944.
+
+\section*{Data and code availability}
+
+Derived data (one row per ring and per bell with parsed cast years, frames, counties, casting years, founders by period, ring sizes and growth, countries) and every reported number (\texttt{results.json}) are at \url{https://github.com/Tristan-Hotham/ring-the-changes}, with the analysis code, and in the Zenodo record for this paper (\url{https://doi.org/10.5281/zenodo.23729641}). The interactive version is at \url{https://tristan-hotham.github.io/ring-the-changes/}. Bell data: Dove's Guide for Church Bell Ringers, Central Council of Church Bell Ringers, dove.cccbr.org.uk, CC BY-SA 4.0 (\url{https://creativecommons.org/licenses/by-sa/4.0/}); changes were made (cleaning, parsing of cast dates, summaries and added counties); this work is not endorsed by the Central Council. As the licence requires, the derived data and this text are released under CC BY-SA 4.0; code is MIT. Churches \textcopyright{} OpenStreetMap contributors (ODbL), used for counts only. Contains OS data \textcopyright{} Crown copyright and database right 2026, and ONS boundaries, used under the Open Government Licence v3.0.
+
+\section*{Funding and competing interests}
+
+This work received no funding. The author declares no competing interests.
+
+\section*{Use of AI}
+
+I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.
+
+\section*{References}
+\small
+\setlength{\parskip}{0.35em}
+\hangindent=1.5em Central Council of Church Bell Ringers. \textit{Dove's Guide for Church Bell Ringers}, online edition and data downloads. CC BY-SA 4.0. \url{https://dove.cccbr.org.uk/downloads} (accessed {{counts.retrieved_text|raw}}).
+
+\hangindent=1.5em Duckworth, R. and Stedman, F. (1668). \textit{Tintinnalogia: or, the Art of Ringing}. London.
+
+\hangindent=1.5em Hotham, T. (2026). Saints and wells: church dedications. Interactive study and data. \url{https://tristan-hotham.github.io/saints-and-wells/}
+
+\hangindent=1.5em Natural Earth. 1:10m land. Public domain. \url{https://www.naturalearthdata.com}
+
+\hangindent=1.5em Office for National Statistics. Local authority district boundaries. Open Geography Portal, Open Government Licence v3.0. \url{https://geoportal.statistics.gov.uk}
+
+\hangindent=1.5em OpenStreetMap contributors. OpenStreetMap, places of worship (amenity=place\_of\_worship), retrieved via QLever, 28 October 2026. ODbL. \url{https://www.openstreetmap.org}
+
+\hangindent=1.5em Ordnance Survey (2026). OS Open Names. Open Government Licence v3.0. \url{https://www.ordnancesurvey.co.uk/products/os-open-names}
+
+\hangindent=1.5em Wikipedia contributors. Change ringing; Church bell; Dove's Guide for Church Bell Ringers; John Taylor \& Co; Ring of bells; Whitechapel Bell Foundry. English Wikipedia, retrieved October 2026. CC BY-SA 4.0. \url{https://en.wikipedia.org}
+
+\end{document}

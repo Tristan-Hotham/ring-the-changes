@@ -1,0 +1,153 @@
+<!-- wp:paragraph -->
+<p><em>England has a musical instrument that almost nobody else plays: a ring of church bells swung full circle and rung in changes. Dove's Guide lists {{counts.rings|int}} of them, holding {{counts.bells|int}} bells. I mapped every one, and found jubilees, wars and seven centuries of bell founding written into the dates on the bells.</em></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://tristan-hotham.github.io/ring-the-changes/">Explore the interactive version</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://doi.org/10.5281/zenodo.23729641">Read the paper</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:paragraph -->
+<p>In the tower of St Denys at Cold Ashby in Northamptonshire hangs a bell dated {{oldest_dated_first.year|raw}}. It is the fourth of a ring of six, and on practice night it is still swung right round, mouth up, by someone holding a rope in the room below. It is the oldest bell with a cast date in Dove's Guide that still hangs in a ring.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Full-circle ringing began in England in the early seventeenth century, when ringers found that a bell swung through a whole circle could be held at the balance and timed to a fraction of a second. A band could then change the order of the bells at every pull. By 1668 Richard Duckworth and Fabian Stedman had published the first book of rules, <em>Tintinnalogia</em>. Since 1950 ringers have found their towers with Dove's Guide, and today the Central Council of Church Bell Ringers publishes it as open data, down to the weight, note, founder and cast date of {{counts.bell_records|int}} bells. It is a superb record, and this post is what I found in it.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">An English art, and a southern one</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>Of the {{counts.rings|int}} rings, {{counts.england|int}} ({{counts.england_share|pct}}) are in England. Wales has {{counts.wales|int}}, the island of Ireland {{counts.ireland|int}} and Scotland just {{counts.scotland|int}}. Devon has the most of any county ({{county_most.0.rings|int}}), then Somerset ({{county_most.1.rings|int}}) and Lincolnshire ({{county_most.2.rings|int}}). They are packed close: half of the towers in England and Wales are within {{geo.nn_median_km|f1}} km of another ring.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_map.png|Map of England, Wales and the edge of Ireland covered in thousands of small bronze dots, one for each ring of bells. They are densest across southern England and the Midlands and thin out in the far north of England and in Wales. Darker, larger dots for rings of ten and twelve cluster in cities.|Every ring of bells in Dove's Guide, coloured by the number of bells.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>To compare like with like, I matched the rings to the {{geo.anglican_osm|int}} Anglican churches that volunteers have mapped in OpenStreetMap. {{geo.anglican_share|pct}} of them have a ring. In Northamptonshire it is {{county_share_top.0.share|pct}} and in Devon {{county_share_top.1.share|pct}}; in Northumberland it is {{county_share_bottom.4.share|pct}} and in Gwynedd {{county_share_bottom.5.share|pct}}. A village church in the south west or the south Midlands is more likely than not to have a ring. One in the far north or in north Wales almost never does.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_share.png|Map of the counties of England and Wales shaded from pale sand to dark bronze. Northamptonshire, Devon, Somerset and Leicestershire are darkest; Northumberland, Tyne and Wear, Gwynedd and Dyfed are palest.|Share of mapped Anglican churches with a ring of bells, by county.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Sixes, and the rise of the twelves</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>The typical English ring has six bells: {{size_groups.six|int}} rings do. There are {{size_groups.eight|int}} eights, {{size_groups.ten|int}} tens and {{size_groups.twelve|int}} twelves. At the small end the bells are often silent: Dove marks {{unringable.three_share|pct}} of all rings of three as unringable, against {{unringable.six_share|pct1}} of sixes.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_sizes.png|Bar chart of rings by number of bells. Six-bell rings tower over the rest at {{size_groups.six|int}}, then eights at {{size_groups.eight|int}}. Rings of three, four and five have large hatched sections marking unringable rings.|Rings by number of bells. Hatched: marked unringable in Dove's Guide.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>The big rings are new. Dove does not record when a ring was augmented, but a ring cannot be older than its newest bell. For the twelves, the median newest bell was cast in {{growth_by.12.median_newest|raw}}, and {{growth_by.12.share_since1950|pct}} have a bell cast since 1950. The twelve-bell ring, the summit of the art, is mostly a creation of the last seventy years.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_growth.png|Line chart of the present rings of 8, 10 and 12 bells by the year their newest bell was cast. Eights rise steeply from about 1870; tens and twelves stay near zero until the twentieth century and climb mainly after 1950.|Present rings of 8, 10 and 12 by the year their newest bell was cast: the latest date each ring could have reached its present size.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Who cast them</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>The median bell in a ring was cast in {{ages.median_year|raw}}, but {{ages.before1500|int}} are medieval. Suffolk has the most ({{ages.medieval_top_counties.0.n|int}}), then Norfolk, Devon and Somerset. Before 1700 bells came from many small local founders. In the eighteenth century the Rudhalls of Gloucester cast thousands. Then two names took over: the Whitechapel foundry in London and the Taylors of Loughborough. Between them they cast {{founders.big2_share|pct}} of all the bells now hanging in rings, and {{founders.c20_big2_share|pct}} of those cast in the twentieth century.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_founders.png|Stacked bar chart of bells in rings today by 25-year period of casting from 1300, coloured by foundry. Before 1700 almost all bells are from other, smaller founders; teal Rudhall bells dominate the early 1700s; blue Whitechapel and brown Taylor bells dominate from the 1800s, with Warner and Gillett and Johnston around 1900.|Bells now in rings by when they were cast and which foundry family cast them, as grouped in Dove's founders table.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+<p>Whitechapel's last bells in the data are dated {{founders.whitechapel_last|raw}}, the year the foundry closed. Since 2018, {{founders.since2018_taylor_share|pct}} of new bells in rings have come from Taylor's.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Jubilees and wars</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>This is the part that surprised me. Count the bells by the year on them and the biggest single year is {{cast_years.top.0.year|raw}}, with {{cast_years.top.0.n|int}} bells: Queen Victoria's Diamond Jubilee. Second is {{cast_years.top.1.year|raw}}, her Golden Jubilee, with {{cast_years.top.1.n|int}}. Each is about twice the years around it. The coronation of George VI in 1937 doubles its neighbours too ({{event.1937.n|int}} bells), and 1902 and 1911, the coronations of Edward VII and George V, stand out clearly. Parishes, it seems, marked the nation's great occasions with new bells.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"sizeSlug":"full"} -->
+<figure class="wp-block-image size-full">{{IMG|b_years.png|Column chart of bells in rings by year of casting from 1800 to 2025. Tall dark spikes at 1887, 1897, 1902, 1911 and 1937; the columns almost vanish during 1914 to 1918 and fall to nothing in 1943 and 1944.|Bells in rings by the year they were cast. Darker columns: jubilees, coronations and the Millennium. Shaded: the world wars.}}</figure>
+<!-- /wp:image -->
+
+<!-- wp:pullquote -->
+<figure class="wp-block-pullquote"><blockquote><p>In 1943 and 1944, not one bell that hangs in a ring today was cast.</p></blockquote></figure>
+<!-- /wp:pullquote -->
+
+<!-- wp:paragraph -->
+<p>The wars cut the other way. In 1910 to 1914 an average of {{wars.pre1|int}} surviving bells were cast a year; in 1915 to 1918, {{wars.ww1|int}}. In the Second World War the church bells fell silent, to be rung only to warn of invasion, and the record nearly stops: {{wars.y1941|int}} bells in 1941, {{wars.y1942|int}} in 1942, none in 1943 or 1944. Then in 1946, {{wars.y1946|int}}. The busiest decade of all was the {{decades.peak_decade|raw}}s, the decade of the war memorials. One honest caution: these are the bells that survive in rings today, not every bell ever cast, so the older years are thinned by recasting.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">Beyond England</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>{{abroad.n|int}} rings hang outside the British Isles: {{abroad.australia|int}} in Australia, {{abroad.usa|int}} in the United States, {{abroad.nz|int}} in New Zealand and {{abroad.canada|int}} in Canada among them. They are mostly big and young. The oldest bell in an American ring was cast in {{abroad.oldest_usa.year|raw}} for the Old North Church in Boston.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading -->
+<h2 class="wp-block-heading">How I did this</h2>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+<p>I downloaded Dove's rings, bells, founders and frames tables on {{counts.retrieved_text|raw}}, parsed every cast date into a year (single years as dated, "c" dates as approximate, ranges at their midpoint), grouped founders into the foundry families Dove itself defines, and placed each ring in a county with ONS boundaries. For the churches I counted an OpenStreetMap Anglican church as having a ring if a Dove ring lies within 150 metres. Everything is descriptive. Dove records the bells that exist now, so the past is seen through what survived, and an untagged church in OpenStreetMap is simply missing from the shares. The interactive version has a map of every tower with its practice night, a search for any town or village, and the full charts.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://tristan-hotham.github.io/ring-the-changes/">Explore the interactive version</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://doi.org/10.5281/zenodo.23729641">Read the paper</a></div>
+<!-- /wp:button -->
+
+<!-- wp:button -->
+<div class="wp-block-button"><a class="wp-block-button__link wp-element-button" href="https://github.com/Tristan-Hotham/ring-the-changes">Data and code</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->
+
+<!-- wp:heading {"level":3} -->
+<h3 class="wp-block-heading">Notes and sources</h3>
+<!-- /wp:heading -->
+
+<!-- wp:list -->
+<ul class="wp-block-list"><!-- wp:list-item -->
+<li>Bell data: <a href="https://dove.cccbr.org.uk/">Dove's Guide for Church Bell Ringers</a>, Central Council of Church Bell Ringers, dove.cccbr.org.uk, <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>. Changes were made (cleaning, parsed cast dates, summaries, counties). This post is not endorsed by the Central Council. My derived data are released under CC BY-SA 4.0.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Churches: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> (ODbL), counts only. County boundaries: Office for National Statistics; place search: OS Open Names; contains OS data © Crown copyright and database right 2026, Open Government Licence v3.0.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>History: Wikipedia, <a href="https://en.wikipedia.org/wiki/Change_ringing">Change ringing</a>, <a href="https://en.wikipedia.org/wiki/Church_bell">Church bell</a>, <a href="https://en.wikipedia.org/wiki/Whitechapel_Bell_Foundry">Whitechapel Bell Foundry</a>, <a href="https://en.wikipedia.org/wiki/John_Taylor_%26_Co">John Taylor &amp; Co</a> and <a href="https://en.wikipedia.org/wiki/Dove%27s_Guide_for_Church_Bell_Ringers">Dove's Guide for Church Bell Ringers</a> (CC BY-SA 4.0).</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>Paper, data and code: <a href="https://doi.org/10.5281/zenodo.23729641">Zenodo</a> and <a href="https://github.com/Tristan-Hotham/ring-the-changes">GitHub</a>. Related: <a href="https://tristan-hotham.github.io/saints-and-wells/">Saints and wells</a>.</li>
+<!-- /wp:list-item -->
+
+<!-- wp:list-item -->
+<li>I wrote the text, with drafting and editing assistance from Claude (Anthropic), which also helped prepare the analysis code. I reviewed and checked all text and results.</li>
+<!-- /wp:list-item --></ul>
+<!-- /wp:list -->
